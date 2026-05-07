@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kisan Mitra AI</title>
+  <meta
+    name="description"
+    content="Kisan Mitra AI is a farmer-facing local crop guidance app with field intake, weather lookup, camera support, and voice input."
+  >
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <nav class="topbar">
+        <div class="brand-block">
+          <div class="brand-mark">KM</div>
+          <div>
+            <p class="eyebrow">Farmer-First Crop Guidance</p>
+            <h1>Kisan Mitra AI</h1>
+          </div>
+        </div>
+        <a class="top-link" href="#intake">Start Crop Check</a>
+      </nav>
+
+      <div class="hero-layout">
+        <section class="hero-copy">
+          <p class="kicker">Built to interact with farmers in simple language</p>
+          <h2>Share the crop problem. Get a practical solution for today.</h2>
+          <p class="hero-text">
+            Kisan Mitra AI helps farmers describe crop stage, field condition, symptoms,
+            and weather so they can receive clear crop-care guidance, low-cost next steps,
+            and practical local guidance right on localhost.
+          </p>
+
+          <div class="hero-actions">
+            <a class="primary-button" href="#intake">Open Crop Intake</a>
+            <a class="secondary-button" href="#assistant">Open Local Guide</a>
+          </div>
+
+          <div class="hero-stats">
+            <article class="stat-card">
+              <span>Crop Playbooks</span>
+              <strong id="heroCropCount">7</strong>
+              <small>Field-ready crop profiles</small>
+            </article>
+            <article class="stat-card">
+              <span>Problem Guides</span>
+              <strong id="heroProblemCount">7</strong>
+              <small>Common crop issue patterns</small>
+            </article>
+            <article class="stat-card">
+              <span>Saved Cases</span>
+              <strong id="heroCaseCount">0</strong>
+              <small>Reusable farmer field records</small>
+            </article>
+          </div>
+        </section>
+
+        <aside class="hero-panel card">
+          <div class="panel-head">
+            <p class="eyebrow">Live Field Snapshot</p>
+            <span class="status-pill" id="configBadge">Checking AI setup</span>
+          </div>
+
+          <div class="signal-grid">
+            <article>
+              <span>Active Crop</span>
+              <strong id="liveSignalCrop">Paddy (Rice)</strong>
+            </article>
+            <article>
+              <span>Main Problem</span>
+              <strong id="liveSignalProblem">Yellowing leaves</strong>
+            </article>
+            <article>
+              <span>Urgency</span>
+              <strong id="liveSignalUrgency">Act today</strong>
+            </article>
+            <article>
+              <span>Water Signal</span>
+              <strong id="liveSignalWater">Balanced</strong>
+            </article>
+          </div>
+
+          <div class="setup-callout">
+            <span>System Status</span>
+            <p id="configText">Local crop solutions work immediately with built-in crop logic, weather, camera preview, and voice input.</p>
+          </div>
+        </aside>
+      </div>
+    </header>
+
+    <main>
+      <section class="section" id="intake">
+        <div class="section-head">
+          <p class="kicker">Farmer Intake</p>
+          <h3>Capture the field situation before asking for a crop solution.</h3>
+        </div>
+
+        <div class="planner-layout">
+          <form class="card planner-form" id="farmForm">
+            <div class="form-grid">
+              <label>
+                Farmer Name
+                <input name="farmerName" type="text" value="Ramu" placeholder="Enter farmer name">
+              </label>
+
+              <label>
+                Village / District
+                <input name="location" type="text" value="Hyderabad" placeholder="Enter village, city, or district">
+              </label>
+
+              <label>
+                Preferred Language
+                <select name="language">
+                  <option value="English">English</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Telugu">Telugu</option>
+                </select>
+              </label>
+
+              <label>
+                Crop
+                <select name="crop" id="cropSelect"></select>
+              </label>
+
+              <label>
+                Crop Stage
+                <select name="stage">
+                  <option value="establishment">Establishment</option>
+                  <option value="vegetative">Vegetative</option>
+                  <option value="flowering">Flowering</option>
+                  <option value="harvest">Harvest / Picking</option>
+                </select>
+              </label>
+
+              <label>
+                Land Size (acres)
+                <input name="acres" type="number" min="0.5" step="0.5" value="5">
+              </label>
+
+              <label>
+                Irrigation Source
+                <select name="irrigationSource">
+                  <option value="rainfed">Rainfed</option>
+                  <option value="borewell">Borewell</option>
+                  <option value="canal">Canal</option>
+                  <option value="drip">Drip</option>
+                  <option value="sprinkler">Sprinkler</option>
+                </select>
+              </label>
+
+              <label>
+                Main Problem
+                <select name="symptom" id="symptomSelect"></select>
+              </label>
+
+              <label>
+                Area Affected (%)
+                <input name="affectedArea" type="number" min="0" max="100" step="1" value="25">
+              </label>
+
+              <label>
+                Soil Moisture (%)
+                <input name="soilMoisture" type="number" min="5" max="95" step="1" value="42">
+              </label>
+
+              <label>
+                Canopy Temp (deg C)
+                <input name="canopyTemp" type="number" min="10" max="50" step="1" value="31">
+              </label>
+
+              <label>
+                Rain Expected (mm)
+                <input name="rainForecast" type="number" min="0" max="200" step="1" value="10">
+              </label>
+
+              <label>
+                Farmer Goal
+                <select name="goal">
+                  <option value="save-crop">Save the crop</option>
+                  <option value="increase-yield">Increase yield</option>
+                  <option value="reduce-cost">Reduce cost</option>
+                  <option value="harvest-quality">Protect harvest quality</option>
+                </select>
+              </label>
+
+              <label>
+                Budget Focus
+                <select name="budget">
+                  <option value="balanced">Balanced</option>
+                  <option value="low">Low cost first</option>
+                  <option value="protect-yield">Protect yield</option>
+                </select>
+              </label>
+
+              <label class="span-2">
+                How urgent is it?
+                <select name="urgency">
+                  <option value="today">Need action today</option>
+                  <option value="this-week">Watch this week</option>
+                  <option value="routine">Routine check</option>
+                </select>
+              </label>
+            </div>
+
+            <button class="primary-button wide-button" type="submit">Generate Crop Solution</button>
+
+            <div class="chip-row" id="scenarioChips"></div>
+          </form>
+
+          <section class="card strategy-board">
+            <div class="board-head">
+              <div>
+                <p class="eyebrow">Solution Board</p>
+                <h4 id="summaryHeadline">Act today solution for Paddy (Rice)</h4>
+              </div>
+              <span class="summary-tag" id="summaryTag">Vegetative stage</span>
+            </div>
+
+            <p class="summary-copy" id="summaryParagraph">
+              Your crop summary will appear here with simple guidance built from the current field details.
+            </p>
+
+            <div class="case-strip">
+              <article class="priority-card">
+                <span>Case ID</span>
+                <strong id="caseIdLabel">KM-DRAFT</strong>
+              </article>
+              <article class="priority-card">
+                <span>Case Status</span>
+                <strong id="caseStageLabel">Draft</strong>
+              </article>
+              <article class="priority-card">
+                <span>Last Updated</span>
+                <strong id="caseUpdatedLabel">Not saved yet</strong>
+              </article>
+            </div>
+
+            <div class="mvp-actions">
+              <button class="secondary-button" type="button" id="saveCaseButton">Save Case</button>
+              <button class="secondary-button" type="button" id="downloadReportButton">Download Report</button>
+              <button class="secondary-button" type="button" id="newCaseButton">Start New Case</button>
+            </div>
+
+            <p class="assist-note case-note" id="caseStatusText">
+              This draft stays on this device. Save it to reopen the field record later.
+            </p>
+
+            <div class="solution-grid">
+              <article class="priority-card">
+                <span>Likely Issue</span>
+                <strong id="issuePriority">Yellowing can come from moisture imbalance, root stress, or uneven nutrition.</strong>
+              </article>
+              <article class="priority-card">
+                <span>What To Do Today</span>
+                <strong id="todayPriority">Start with the weakest patch and compare it to a healthy row before spending money.</strong>
+              </article>
+              <article class="priority-card">
+                <span>Water Plan</span>
+                <strong id="waterPriority">Use split watering only if the driest patch still looks stressed.</strong>
+              </article>
+              <article class="priority-card">
+                <span>Budget Move</span>
+                <strong id="budgetPriority">Begin with low-cost checks and act on the affected area first.</strong>
+              </article>
+              <article class="priority-card">
+                <span>When To Escalate</span>
+                <strong id="expertPriority">Call a local agriculture officer if symptoms spread quickly or hit new growth.</strong>
+              </article>
+            </div>
+
+            <div class="checklist-card">
+              <div class="panel-head">
+                <p class="eyebrow">Next 48 Hours</p>
+                <span class="mini-pill">Farmer Checklist</span>
+              </div>
+              <ul id="checklistList">
+                <li>Walk the field and compare a weak patch with a healthy patch.</li>
+                <li>Check root-zone moisture before changing irrigation.</li>
+                <li>Watch whether the issue spreads to new leaves or rows.</li>
+              </ul>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section" id="tools">
+        <div class="section-head">
+          <p class="kicker">Field Tools</p>
+          <h3>Use water planning and live weather to support farmer decisions.</h3>
+        </div>
+
+        <div class="tool-layout">
+          <section class="card tool-card">
+            <div class="panel-head">
+              <p class="eyebrow">Water Planner</p>
+              <span class="mini-pill">Local calculation</span>
+            </div>
+
+            <form id="irrigationForm" class="stack-form">
+              <label>
+                Crop
+                <select name="crop" id="irrigationCropSelect"></select>
+              </label>
+
+              <label>
+                Area (acres)
+                <input name="acres" type="number" min="0.5" step="0.5" value="5">
+              </label>
+
+              <label>
+                Pump Rate (L/min)
+                <input name="pumpRate" type="number" min="100" step="50" value="600">
+              </label>
+
+              <label>
+                Soil Moisture (%)
+                <input name="soilMoisture" type="number" min="5" max="95" step="1" value="42">
+              </label>
+
+              <button class="secondary-button wide-button" type="submit">Estimate Watering</button>
+            </form>
+
+            <div class="tool-output">
+              <strong id="irrigationVolume">Recommended volume: 0 L</strong>
+              <p id="irrigationDuration">Estimated pump time: --</p>
+            </div>
+          </section>
+
+          <section class="card weather-card">
+            <div class="panel-head">
+              <p class="eyebrow">Weather Feed</p>
+              <span class="mini-pill">Open-Meteo</span>
+            </div>
+
+            <form id="weatherForm" class="stack-form">
+              <label>
+                Farm Location
+                <input id="weatherLocationInput" name="location" type="text" value="Hyderabad" placeholder="Search a village, city, or district">
+              </label>
+              <button class="secondary-button wide-button" type="submit">Load Weather</button>
+            </form>
+
+            <div class="tool-output weather-summary">
+              <strong id="weatherLocationLabel">Weather not loaded</strong>
+              <p id="weatherSummaryText">Search a location to pull forecast data into the crop solution and local guide.</p>
+            </div>
+
+            <div class="metric-grid">
+              <article class="priority-card">
+                <span>Current Temp</span>
+                <strong id="weatherCurrentTemp">--</strong>
+              </article>
+              <article class="priority-card">
+                <span>Humidity</span>
+                <strong id="weatherHumidity">--</strong>
+              </article>
+              <article class="priority-card">
+                <span>Rain Chance</span>
+                <strong id="weatherRainChance">--</strong>
+              </article>
+              <article class="priority-card">
+                <span>ET0</span>
+                <strong id="weatherEt0">--</strong>
+              </article>
+              <article class="priority-card">
+                <span>Surface Soil</span>
+                <strong id="weatherSoil">--</strong>
+              </article>
+            </div>
+
+            <div class="forecast-grid" id="forecastCards"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section" id="cases">
+        <div class="section-head">
+          <p class="kicker">Case Tracker</p>
+          <h3>Save farmer visits locally and reopen them for the next field round.</h3>
+        </div>
+
+        <div class="knowledge-layout">
+          <section class="card">
+            <div class="panel-head">
+              <p class="eyebrow">Recent Cases</p>
+              <span class="mini-pill">Stored on this device</span>
+            </div>
+            <div class="case-list" id="caseList">
+              <article class="empty-state">
+                <strong>No saved cases yet.</strong>
+                <p>Save the current field record to start building your local farmer case history.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="panel-head">
+              <p class="eyebrow">MVP Scope</p>
+              <span class="mini-pill">Ready now, AI later</span>
+            </div>
+            <div class="mvp-grid">
+              <article class="priority-card">
+                <span>What Works Today</span>
+                <strong>Field intake, camera reference, voice input, weather, case saving, and downloadable reports.</strong>
+              </article>
+              <article class="priority-card">
+                <span>Best For</span>
+                <strong>Farmers, field officers, and early pilot programs who need a simple crop advisory workflow.</strong>
+              </article>
+              <article class="priority-card">
+                <span>Later Upgrade Path</span>
+                <strong>The current case structure is ready for future AI analysis, photo triage, and multilingual answers.</strong>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section" id="assistant">
+        <div class="section-head">
+          <p class="kicker">Local Assistant</p>
+          <h3>Ask crop questions using built-in local guidance and live field context.</h3>
+        </div>
+
+        <div class="copilot-layout">
+          <section class="card copilot-card">
+            <div class="panel-head">
+              <p class="eyebrow">Prompt Starters</p>
+              <span class="mini-pill">Farmer context included</span>
+            </div>
+            <div class="chip-row" id="promptChips"></div>
+
+            <div class="assistant-toolbox">
+              <section class="tool-output media-card">
+                <div class="panel-head">
+                  <p class="eyebrow">Camera Support</p>
+                  <span class="mini-pill" id="photoModeBadge">Photo optional</span>
+                </div>
+
+                <div class="media-actions">
+                  <label class="secondary-button upload-button">
+                    Use Camera / Upload
+                    <input id="photoInput" class="hidden-input" type="file" accept="image/*" capture="environment">
+                  </label>
+                  <button class="secondary-button" type="button" id="clearPhotoButton">Remove Photo</button>
+                </div>
+
+                <p class="assist-note" id="photoStatus">Attach a crop or leaf photo to keep a local visual reference while reviewing guidance.</p>
+
+                <div class="photo-preview-shell is-empty" id="photoPreviewShell">
+                  <img id="photoPreview" alt="Crop photo preview">
+                  <p id="photoPlaceholder">No photo attached yet.</p>
+                </div>
+              </section>
+
+              <section class="tool-output media-card">
+                <div class="panel-head">
+                  <p class="eyebrow">Voice Input</p>
+                  <span class="mini-pill" id="voiceSupportBadge">Checking support</span>
+                </div>
+
+                <p class="assist-note" id="voiceStatus">Tap the mic and speak your question in the selected language.</p>
+
+                <div class="media-actions">
+                  <button class="secondary-button" type="button" id="voiceToggleButton">Start Voice Input</button>
+                  <button class="secondary-button" type="button" id="clearQuestionButton">Clear Question</button>
+                </div>
+              </section>
+            </div>
+
+            <div class="chat-thread" id="chatThread">
+              <article class="message assistant">
+                <span>Kisan Mitra Guide</span>
+                <p>I can use the farmer details, crop problem, irrigation setup, and weather to suggest practical local next steps.</p>
+              </article>
+            </div>
+
+            <form id="copilotForm" class="stack-form">
+              <label>
+                Ask Kisan Mitra Guide
+                <textarea id="copilotQuestion" name="question" rows="4" placeholder="My paddy leaves are turning yellow. What should I inspect first today?"></textarea>
+              </label>
+              <button class="primary-button wide-button" type="submit">Get Local Guidance</button>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <section class="section" id="knowledge">
+        <div class="section-head">
+          <p class="kicker">Knowledge Base</p>
+          <h3>Browse the crop and problem playbooks behind the advice.</h3>
+        </div>
+
+        <div class="knowledge-layout">
+          <section class="card">
+            <div class="panel-head">
+              <p class="eyebrow">Crop Library</p>
+              <span class="mini-pill">Tap to load crop</span>
+            </div>
+            <div class="library-grid" id="cropLibrary"></div>
+          </section>
+
+          <section class="card">
+            <div class="panel-head">
+              <p class="eyebrow">Problem Library</p>
+              <span class="mini-pill">Tap to load issue</span>
+            </div>
+            <div class="library-grid" id="problemLibrary"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer card">
+      <div class="footer-row">
+        <div>
+          <p class="eyebrow">App Link</p>
+          <a id="appUrlLink" class="footer-link" href="/" target="_blank" rel="noreferrer">Open Kisan Mitra AI</a>
+        </div>
+        <div>
+          <p class="eyebrow">Built For</p>
+          <p class="footer-name">Farmers and field advisors</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

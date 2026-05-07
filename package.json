@@ -1,0 +1,12 @@
+{
+  "name": "terrasage-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A farmer-facing crop guidance MVP with weather, case tracking, camera support, and voice input.",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
