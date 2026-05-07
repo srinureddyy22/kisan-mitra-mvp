@@ -11,6 +11,7 @@ Kisan Mitra AI is a farmer-facing crop solution MVP that helps farmers describe 
 - local-only guidance without sending questions to an external AI service
 - saved local case records
 - downloadable field reports
+- installable app support for Android and iOS through Capacitor
 
 ## What The App Does
 
@@ -22,6 +23,7 @@ Kisan Mitra AI is a farmer-facing crop solution MVP that helps farmers describe 
 - runs fully in local guidance mode
 - saves recent farmer cases in local storage so field teams can reopen them later
 - uses a case structure that can be connected to AI later without rebuilding the workflow
+- reuses the same `public/` app for the web, Android, and iOS wrappers
 
 ## Quick Start
 
@@ -39,6 +41,31 @@ npm start
 - `PORT`: optional, defaults to `4173`
 
 The app provides local crop-solution logic, irrigation planning, camera preview support, voice input, and live weather lookup without any external AI key.
+
+## Android And iOS App Setup
+
+This repo now includes:
+
+- [capacitor.config.json](C:/Users/srinu/OneDrive/Documents/New project/capacitor.config.json)
+- [android/](C:/Users/srinu/OneDrive/Documents/New project/android)
+- [ios/](C:/Users/srinu/OneDrive/Documents/New project/ios)
+
+Use these commands after cloning:
+
+```bash
+npm install
+npx cap sync
+npx cap open android
+npx cap open ios
+```
+
+Notes:
+
+- Android builds are opened from Android Studio.
+- iOS builds are opened from Xcode and require macOS for signing and App Store release.
+- Camera and microphone permission text has already been added to the native app shells.
+- Voice input depends on platform Web Speech support. If a device does not support it, the app falls back to typed questions.
+- The mobile wrappers use the same `public/` app bundle that powers the web release.
 
 ## Release To GitHub Pages
 

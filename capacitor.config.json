@@ -1,0 +1,8 @@
+{
+  "appId": "com.kisanmitra.app",
+  "appName": "Kisan Mitra AI",
+  "webDir": "public",
+  "server": {
+    "androidScheme": "https"
+  }
+}

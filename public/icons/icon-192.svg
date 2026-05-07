@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title">
+  <title>Kisan Mitra AI</title>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2f6545" />
+      <stop offset="100%" stop-color="#1d3f2d" />
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="44" fill="url(#bg)" />
+  <circle cx="96" cy="96" r="52" fill="#f6efdf" opacity="0.12" />
+  <path d="M54 125c18-6 36-30 42-58 13 8 22 21 25 39 6-7 14-13 25-17-5 24-23 44-44 51-18 7-36 4-48-15Z" fill="#d6b764" />
+  <path d="M86 62c-6 29-18 50-34 62" fill="none" stroke="#f6efdf" stroke-linecap="round" stroke-width="8" />
+  <text x="96" y="160" text-anchor="middle" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="26" font-weight="700" fill="#fff6de">KM</text>
+</svg>

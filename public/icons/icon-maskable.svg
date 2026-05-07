@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title>Kisan Mitra AI</title>
+  <rect width="512" height="512" fill="#244c35" />
+  <rect x="64" y="64" width="384" height="384" rx="96" fill="#2f6545" />
+  <circle cx="256" cy="256" r="136" fill="#f6efdf" opacity="0.1" />
+  <path d="M158 336c45-15 92-77 107-148 34 19 58 52 67 97 14-18 34-32 59-43-14 60-58 110-111 128-45 15-90 10-122-34Z" fill="#d6b764" />
+  <path d="M237 180c-16 71-45 125-88 155" fill="none" stroke="#fff6de" stroke-linecap="round" stroke-width="18" />
+  <text x="256" y="407" text-anchor="middle" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="64" font-weight="700" fill="#fff6de">KM</text>
+</svg>

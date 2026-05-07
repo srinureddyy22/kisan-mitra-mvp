@@ -1,5 +1,5 @@
 {
-  "name": "terrasage-ai",
+  "name": "kisan-mitra-mvp",
   "version": "1.0.0",
   "private": true,
   "description": "A farmer-facing crop guidance MVP with weather, case tracking, camera support, and voice input.",
@@ -7,6 +7,20 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "cap:copy": "npx cap copy",
+    "cap:sync": "npx cap sync",
+    "cap:open:android": "npx cap open android",
+    "cap:open:ios": "npx cap open ios",
+    "cap:run:android": "npx cap run android",
+    "cap:run:ios": "npx cap run ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/ios": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0"
   }
 }

@@ -1,4 +1,5 @@
 const seed = window.kisanMitraSeed;
+const publishedWebUrl = "https://srinureddyy22.github.io/kisan-mitra-mvp/";
 
 const cropKeys = Object.keys(seed.crops);
 const problemKeys = Object.keys(seed.problems);
@@ -100,6 +101,18 @@ function writeStoredState(nextState) {
   } catch (error) {
     return;
   }
+}
+
+function isNativePlatform() {
+  return Boolean(window.Capacitor?.isNativePlatform?.());
+}
+
+function isStandaloneExperience() {
+  return (
+    isNativePlatform() ||
+    window.matchMedia?.("(display-mode: standalone)")?.matches ||
+    window.navigator.standalone === true
+  );
 }
 
 function mergeStoredState(partial) {
@@ -1075,10 +1088,14 @@ function renderIrrigation() {
 
 function renderConfig(config) {
   state.config = config;
-  dom.configBadge.textContent = "Release ready";
+  const isInstalled = isStandaloneExperience();
+
+  dom.configBadge.textContent = isInstalled ? "App mode" : "Install ready";
   dom.configBadge.classList.remove("ready");
   dom.configText.textContent =
-    "This MVP runs fully in local mode with crop logic, live weather, case saving, camera reference, and voice input. It is ready to publish as a static web app, and the same case workflow can connect to AI later without changing the farmer flow.";
+    isInstalled
+      ? "This app is running in a mobile-friendly shell with local crop logic, live weather, camera support, and saved farmer cases."
+      : "This MVP runs fully in local mode with crop logic, live weather, case saving, camera reference, and voice input. It is ready for browser install, Android wrapping, and iOS wrapping from the same codebase.";
   renderPhotoState();
 }
 
@@ -1447,6 +1464,12 @@ function initializeState() {
 }
 
 function renderAppLink() {
+  if (isNativePlatform()) {
+    dom.appUrlLink.href = publishedWebUrl;
+    dom.appUrlLink.textContent = publishedWebUrl;
+    return;
+  }
+
   const url = new URL(window.location.href);
 
   url.hash = "";
@@ -1458,6 +1481,18 @@ function renderAppLink() {
 
   dom.appUrlLink.href = url;
   dom.appUrlLink.textContent = url.toString();
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator) || window.location.protocol === "file:") {
+    return;
+  }
+
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(() => {
+      return;
+    });
+  });
 }
 
 dom.farmForm.addEventListener("submit", (event) => {
@@ -1626,4 +1661,5 @@ initializeForms();
 initializeVoiceRecognition();
 initializeState();
 renderAppLink();
+registerServiceWorker();
 fetchConfig();
