@@ -1075,11 +1075,105 @@ function renderIrrigation() {
 
 function renderConfig(config) {
   state.config = config;
-  dom.configBadge.textContent = "MVP live";
+  dom.configBadge.textContent = "Release ready";
   dom.configBadge.classList.remove("ready");
   dom.configText.textContent =
-    "This MVP runs fully in local mode with crop logic, weather, case saving, camera reference, and voice input. The same case workflow can connect to AI later without changing the farmer flow.";
+    "This MVP runs fully in local mode with crop logic, live weather, case saving, camera reference, and voice input. It is ready to publish as a static web app, and the same case workflow can connect to AI later without changing the farmer flow.";
   renderPhotoState();
+}
+
+async function fetchWeatherSnapshot(locationQuery) {
+  const geocodeUrl = new URL("https://geocoding-api.open-meteo.com/v1/search");
+  geocodeUrl.searchParams.set("name", locationQuery);
+  geocodeUrl.searchParams.set("count", "1");
+  geocodeUrl.searchParams.set("language", "en");
+  geocodeUrl.searchParams.set("format", "json");
+
+  const geocodeResponse = await fetch(geocodeUrl);
+  const geocodeData = await geocodeResponse.json();
+
+  if (!geocodeResponse.ok) {
+    throw new Error(geocodeData.reason || "Unable to resolve that location.");
+  }
+
+  const place = geocodeData.results?.[0];
+
+  if (!place) {
+    throw new Error("No matching farm location was found.");
+  }
+
+  const forecastUrl = new URL("https://api.open-meteo.com/v1/forecast");
+  forecastUrl.searchParams.set("latitude", String(place.latitude));
+  forecastUrl.searchParams.set("longitude", String(place.longitude));
+  forecastUrl.searchParams.set(
+    "current",
+    [
+      "temperature_2m",
+      "relative_humidity_2m",
+      "precipitation",
+      "wind_speed_10m",
+      "soil_moisture_0_to_1cm"
+    ].join(",")
+  );
+  forecastUrl.searchParams.set(
+    "daily",
+    [
+      "temperature_2m_max",
+      "temperature_2m_min",
+      "precipitation_sum",
+      "precipitation_probability_max",
+      "et0_fao_evapotranspiration"
+    ].join(",")
+  );
+  forecastUrl.searchParams.set("forecast_days", "3");
+  forecastUrl.searchParams.set("timezone", "auto");
+
+  const forecastResponse = await fetch(forecastUrl);
+  const forecastData = await forecastResponse.json();
+
+  if (!forecastResponse.ok) {
+    throw new Error(forecastData.reason || "Unable to load forecast data.");
+  }
+
+  const current = forecastData.current || {};
+  const daily = forecastData.daily || {};
+  const forecast = (daily.time || []).map((date, index) => ({
+    date,
+    maxTempC: daily.temperature_2m_max?.[index],
+    minTempC: daily.temperature_2m_min?.[index],
+    precipitationMm: daily.precipitation_sum?.[index],
+    rainChancePercent: daily.precipitation_probability_max?.[index],
+    et0Mm: daily.et0_fao_evapotranspiration?.[index]
+  }));
+
+  const locationName = [place.name, place.admin1, place.country].filter(Boolean).join(", ");
+  const today = forecast[0] || {};
+
+  return {
+    query: locationQuery,
+    locationName,
+    coordinates: {
+      latitude: place.latitude,
+      longitude: place.longitude
+    },
+    timezone: forecastData.timezone,
+    current: {
+      temperatureC: current.temperature_2m,
+      humidityPercent: current.relative_humidity_2m,
+      precipitationMm: current.precipitation,
+      windSpeedKph: current.wind_speed_10m,
+      surfaceSoilMoisturePercent: Number.isFinite(current.soil_moisture_0_to_1cm)
+        ? current.soil_moisture_0_to_1cm * 100
+        : null
+    },
+    forecast,
+    summary: `${locationName} is currently ${formatNumber(current.temperature_2m)} deg C with ${formatNumber(
+      current.relative_humidity_2m,
+      0
+    )}% humidity. Today shows ${formatNumber(today.rainChancePercent, 0)}% rain chance and ${formatNumber(
+      today.et0Mm
+    )} mm ET0.`
+  };
 }
 
 function renderWeatherLoading(location) {
@@ -1288,17 +1382,11 @@ function collectFarmSnapshot() {
 }
 
 async function fetchConfig() {
-  try {
-    const response = await fetch("/api/config");
-    const data = await response.json();
-    renderConfig(data);
-  } catch (error) {
-    renderConfig({
-      assistantMode: "local-only",
-      openAiConfigured: false,
-      model: null
-    });
-  }
+  renderConfig({
+    assistantMode: "local-only",
+    openAiConfigured: false,
+    model: null
+  });
 }
 
 async function loadWeather(location, options = {}) {
@@ -1315,14 +1403,8 @@ async function loadWeather(location, options = {}) {
   renderWeatherLoading(cleanLocation);
 
   try {
-    const response = await fetch(`/api/weather?location=${encodeURIComponent(cleanLocation)}`);
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Weather request failed.");
-    }
-
-    renderWeather(data, {
+    const weather = await fetchWeatherSnapshot(cleanLocation);
+    renderWeather(weather, {
       markDirty: shouldMarkDirty
     });
   } catch (error) {
@@ -1365,9 +1447,17 @@ function initializeState() {
 }
 
 function renderAppLink() {
-  const url = window.location.origin || window.location.href;
+  const url = new URL(window.location.href);
+
+  url.hash = "";
+  url.search = "";
+
+  if (!url.pathname.endsWith("/")) {
+    url.pathname = url.pathname.replace(/[^/]+$/, "");
+  }
+
   dom.appUrlLink.href = url;
-  dom.appUrlLink.textContent = url;
+  dom.appUrlLink.textContent = url.toString();
 }
 
 dom.farmForm.addEventListener("submit", (event) => {

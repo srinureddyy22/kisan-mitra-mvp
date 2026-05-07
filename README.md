@@ -40,6 +40,25 @@ npm start
 
 The app provides local crop-solution logic, irrigation planning, camera preview support, voice input, and live weather lookup without any external AI key.
 
+## Release To GitHub Pages
+
+This MVP is release-ready as a static web app.
+
+1. Push the latest code to GitHub.
+2. In the repository, open `Settings -> Pages`.
+3. Under `Build and deployment`, set `Source` to `GitHub Actions`.
+4. Push to `main` and let the `Deploy GitHub Pages` workflow publish the `public/` folder.
+5. Open the live site at:
+
+```text
+https://srinureddyy22.github.io/kisan-mitra-mvp/
+```
+
+Notes:
+
+- GitHub Pages works for public repositories on GitHub Free. Private repositories require a plan that supports Pages.
+- The released site fetches Open-Meteo weather directly from the browser, so no Node server is required in production.
+
 ## Deploy To Render
 
 This project includes [render.yaml](C:/Users/srinu/OneDrive/Documents/New project/render.yaml).
